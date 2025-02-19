@@ -76,17 +76,23 @@ lottie_hello = load_lottieurl("https://assets3.lottiefiles.com/packages/lf20_3rw
 
 st.title("Interactive Learning Hub: Code & Create 🚀")
 
-# File Upload Section
 st.subheader("📁 File Upload Center")
 uploaded_file = st.file_uploader("Upload your project files", type=['py', 'txt', 'pdf', 'jpg', 'png'])
 if uploaded_file is not None:
-    if uploaded_file.type.startswith('image'):
-        image = Image.open(uploaded_file)
-        st.image(image, caption='Uploaded Image', use_column_width=True)
-    else:
-        content = uploaded_file.read()
-        st.write("File Contents:")
-        st.code(content.decode())
+    try:
+        if uploaded_file.type.startswith('image'):
+            image = Image.open(uploaded_file)
+            st.image(image, caption='Uploaded Image', use_column_width=True)
+        else:
+            content = uploaded_file.read()
+            try:
+                st.write("File Contents:")
+                st.code(content.decode('utf-8'))
+            except UnicodeDecodeError:
+                st.write("File Contents:")
+                st.code(content.decode('latin-1'))
+    except Exception as e:
+        st.error(f"An error occurred while processing the file: {str(e)}")
 
 # Inspirational Quotes
 quotes = [
